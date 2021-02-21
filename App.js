@@ -6,17 +6,20 @@ import {
   View,
   FlatList,
   TouchableOpacity,
+  Button,
 } from "react-native";
-// import { StatusBar } from "expo-status-bar";
-// import Header from "./components/Header";
+import { Ionicons } from "@expo/vector-icons";
+
 import TodoItem from "./components/TodoItem";
 import AddTodo from "./components/AddTodo";
+import PickerModal from "./components/PickerModal";
 
 export default function App() {
   const [todos, setTodos] = useState([{ text: "Repot a plant", key: "1" }]);
 
-  //FROM APP2
   const [currentIndex, setCurrentIndex] = useState(null);
+
+  const [show, setShow] = useState(true);
 
   // function: When pressing on an todo item, it gets deleted.
   // filter through the current state, takes out the one item which has the key that
@@ -39,6 +42,7 @@ export default function App() {
     });
   };
 
+  //this is for web only
   // useEffect(() => {
   //   const dataFromLocalStorage = localStorage.getItem("test");
   //   if (dataFromLocalStorage) {
@@ -52,35 +56,39 @@ export default function App() {
   // });
 
   return (
-    // APP
-    // <View style={styles.containerr}>
-    //   {/* <Header></Header>
-    //   <App2></App2> */}
-    //   <View style={styles.contentt}>
-    //     <AddTodo submitHandler={submitHandler} />
-    //     <View style={styles.listt}>
-    //       <FlatList
-    //         data={todos}
-    //         //the data from state todos being rendered, one for every item.
-    //         renderItem={({ item }) => (
-    //           //passing presshandler function as a prop to todoitem.js
-    //           <TodoItem todos={todos} item={item} pressHandler={pressHandler} />
-    //         )}
-    //       ></FlatList>
-    //     </View>
-    //   </View>
-
-    /* // FOR APP2 */
     <View style={styles.container}>
-      {/* <StatusBar hidden /> */}
+      <Ionicons
+        style={styles.listicon}
+        name="ios-list-outline"
+        size={60}
+        color="pink"
+      />
+      <Text style={styles.addHeader}>Add task</Text>
 
-      {/* iterates over every object (category) from data.js */}
+      <AddTodo submitHandler={submitHandler} />
+      <TouchableOpacity
+        style={styles.selectCategory}
+        onPress={() => {
+          setShow(true);
+          //if toggle
+          // setShow(show === false ? null : true);
+        }}
+      >
+        <Text style={styles.categoryTxt}>select category</Text>
+      </TouchableOpacity>
+
+      {show === true && (
+        <PickerModal show={show} setShow={setShow}></PickerModal>
+      )}
+
       {data.map(({ bg, color, category, subCategories }, index) => {
         return (
           <TouchableOpacity
             key={category}
-            onPress={() => {
+            onPress={(e) => {
               setCurrentIndex(index === currentIndex ? null : index);
+              //shows current category when clicking on the title.
+              console.log(e.target.textContent);
             }}
             style={styles.cardContainer}
             activeOpacity={0.9}
@@ -96,21 +104,17 @@ export default function App() {
                       {subCategory}
                     </Text>
                   ))}
-                  {/* This is the original app code from this file moved here */}
                   <View style={styles.listContainer}>
                     <View style={styles.listContent}>
-                      <AddTodo submitHandler={submitHandler} />
+                      {/* <AddTodo submitHandler={submitHandler} /> */}
+                      {/* <Form></Form> */}
                       <View style={styles.list}>
                         <FlatList
                           data={todos}
                           //the data from state todos being rendered, one for every item.
                           renderItem={({ item }) => (
                             //passing presshandler function as a prop to todoitem.js
-                            <TodoItem
-                              todos={todos}
-                              item={item}
-                              pressHandler={pressHandler}
-                            />
+                            <TodoItem item={item} pressHandler={pressHandler} />
                           )}
                         ></FlatList>
                       </View>
@@ -118,24 +122,56 @@ export default function App() {
                   </View>
                 </View>
               )}
+              {/* end of index===currentindex above */}
             </View>
           </TouchableOpacity>
         );
+        //end of data.map above
       })}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  // FOR APP2
   container: {
-    flex: 1,
-    backgroundColor: "pink",
+    flexGrow: 1,
+    paddingTop: 100,
+    // backgroundColor: "#B18D8B",
+    backgroundColor: "#313035",
     justifyContent: "center",
+  },
+
+  listicon: {
+    textAlign: "center",
+  },
+
+  addHeader: {
+    fontSize: 30,
+    color: "#eee",
+    textTransform: "uppercase",
+    textAlign: "center",
+  },
+
+  selectCategory: {
+    alignItems: "center",
+    backgroundColor: "#9f5c64",
+    marginTop: 20,
+    marginBottom: 20,
+    padding: 15,
+    marginRight: 30,
+    marginLeft: 30,
+    borderRadius: 5,
+  },
+
+  categoryTxt: {
+    fontSize: 15,
+    textAlign: "center",
   },
 
   cardContainer: {
     flexGrow: 1,
+
+    margin: 15,
   },
 
   card: {
