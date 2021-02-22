@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, Button } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TextInput,
+  Button,
+  TouchableOpacity,
+} from "react-native";
+import SelectPicker from "react-native-form-select-picker";
 
 //destructure submithandler prop
 export default function AddTodo({ submitHandler }) {
@@ -14,22 +22,35 @@ export default function AddTodo({ submitHandler }) {
     <View>
       <TextInput
         style={styles.input}
-        placeholder="write something..."
+        placeholder="Add todo.."
         onChangeText={changeHandler}
       />
-      <Button
+
+      <TouchableOpacity
         onPress={() => submitHandler(text)}
-        title="Add task"
-        color="#292721"
-      />
+        style={styles.button}
+      >
+        <Text>Add todo</Text>
+      </TouchableOpacity>
     </View>
   );
 }
 
 const styles = {
+  button: {
+    alignItems: "center",
+    backgroundColor: "#927071",
+    padding: 15,
+    marginRight: 30,
+    marginLeft: 30,
+    borderRadius: 5,
+  },
+
   input: {
     backgroundColor: "#e5e4e3",
     marginBottom: 20,
+    margin: 30,
+
     // paddingHorizontal: 8,
     // paddingVertical: 8,
     padding: 15,
