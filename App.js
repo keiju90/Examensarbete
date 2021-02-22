@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import data from "./components/data";
 import {
   StyleSheet,
@@ -6,20 +6,29 @@ import {
   View,
   FlatList,
   TouchableOpacity,
-  Button,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
+import * as Font from "expo-font";
+import AppLoading from "expo-app-loading";
 import TodoItem from "./components/TodoItem";
 import AddTodo from "./components/AddTodo";
 import PickerModal from "./components/PickerModal";
 
+const getFonts = () =>
+  Font.loadAsync({
+    abrilfatface: require("./assets/fonts/AbrilFatface-Regular.ttf"),
+    jostlight: require("./assets/fonts/Jost-Light.ttf"),
+    reemkufi: require("./assets/fonts/ReemKufi-Regular.ttf"),
+  });
+
 export default function App() {
+  const [fontsLoaded, setFontsLoaded] = useState(false);
+
   const [todos, setTodos] = useState([{ text: "Repot a plant", key: "1" }]);
 
   const [currentIndex, setCurrentIndex] = useState(null);
 
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
 
   // function: When pressing on an todo item, it gets deleted.
   // filter through the current state, takes out the one item which has the key that
@@ -42,102 +51,106 @@ export default function App() {
     });
   };
 
-  //this is for web only
-  // useEffect(() => {
-  //   const dataFromLocalStorage = localStorage.getItem("test");
-  //   if (dataFromLocalStorage) {
-  //     setTodos(JSON.parse(dataFromLocalStorage));
-  //   }
-  // }, []);
+  if (fontsLoaded) {
+    return (
+      <View style={styles.container}>
+        {/* <Ionicons
+          style={styles.listicon}
+          name="ios-list-outline"
+          size={60}
+          color="pink"
+        /> */}
+        {/* <Text style={styles.addHeader}>Add task</Text> */}
+        <Text style={styles.addHeader2}>Add your task</Text>
+        {/* <Text style={styles.addHeader3}>Add task</Text> */}
 
-  // // runs after every time page renders, saves the current state to localstorage.
-  // useEffect(() => {
-  //   localStorage.setItem("test", JSON.stringify(todos));
-  // });
+        <AddTodo submitHandler={submitHandler} />
 
-  return (
-    <View style={styles.container}>
-      <Ionicons
-        style={styles.listicon}
-        name="ios-list-outline"
-        size={60}
-        color="pink"
-      />
-      <Text style={styles.addHeader}>Add task</Text>
+        <TouchableOpacity
+          style={styles.selectCategory}
+          onPress={() => {
+            setShow(true);
+            //if toggle
+            // setShow(show === false ? null : true);
+          }}
+        >
+          <Text style={styles.categoryTxt}>Select category</Text>
+        </TouchableOpacity>
 
-      <AddTodo submitHandler={submitHandler} />
-      <TouchableOpacity
-        style={styles.selectCategory}
-        onPress={() => {
-          setShow(true);
-          //if toggle
-          // setShow(show === false ? null : true);
-        }}
-      >
-        <Text style={styles.categoryTxt}>select category</Text>
-      </TouchableOpacity>
+        {show === true && (
+          <PickerModal show={show} setShow={setShow}></PickerModal>
+        )}
 
-      {show === true && (
-        <PickerModal show={show} setShow={setShow}></PickerModal>
-      )}
-
-      {data.map(({ bg, color, category, subCategories }, index) => {
-        return (
-          <TouchableOpacity
-            key={category}
-            onPress={(e) => {
-              setCurrentIndex(index === currentIndex ? null : index);
-              //shows current category when clicking on the title.
-              console.log(e.target.textContent);
-            }}
-            style={styles.cardContainer}
-            activeOpacity={0.9}
-          >
-            {/* the card itself containing the category from data.js */}
-            <View style={[styles.card, { backgroundColor: bg }]}>
-              <Text style={[styles.heading, { color: color }]}>{category}</Text>
-              {/* if index is currentindex, show items  */}
-              {index === currentIndex && (
-                <View style={styles.subCategoriesList}>
-                  {subCategories.map((subCategory) => (
-                    <Text key={subCategory} style={[styles.body, { color }]}>
-                      {subCategory}
-                    </Text>
-                  ))}
-                  <View style={styles.listContainer}>
-                    <View style={styles.listContent}>
-                      {/* <AddTodo submitHandler={submitHandler} /> */}
-                      {/* <Form></Form> */}
-                      <View style={styles.list}>
-                        <FlatList
-                          data={todos}
-                          //the data from state todos being rendered, one for every item.
-                          renderItem={({ item }) => (
-                            //passing presshandler function as a prop to todoitem.js
-                            <TodoItem item={item} pressHandler={pressHandler} />
-                          )}
-                        ></FlatList>
+        {data.map(({ bg, color, category, subCategories }, index) => {
+          return (
+            <TouchableOpacity
+              key={category}
+              onPress={(e) => {
+                setCurrentIndex(index === currentIndex ? null : index);
+                //shows current category when clicking on the title.
+                console.log(e.target.textContent);
+              }}
+              style={styles.cardContainer}
+              activeOpacity={0.9}
+            >
+              {/* the card itself containing the category from data.js */}
+              <View style={[styles.card, { backgroundColor: bg }]}>
+                <Text style={[styles.heading, { color: color }]}>
+                  {category}
+                </Text>
+                {/* if index is currentindex, show items  */}
+                {index === currentIndex && (
+                  <View style={styles.subCategoriesList}>
+                    {subCategories.map((subCategory) => (
+                      <Text key={subCategory} style={[styles.body, { color }]}>
+                        {subCategory}
+                      </Text>
+                    ))}
+                    <View style={styles.listContainer}>
+                      <View style={styles.listContent}>
+                        {/* <AddTodo submitHandler={submitHandler} /> */}
+                        {/* <Form></Form> */}
+                        <View style={styles.list}>
+                          <FlatList
+                            data={todos}
+                            //the data from state todos being rendered, one for every item.
+                            renderItem={({ item }) => (
+                              //passing presshandler function as a prop to todoitem.js
+                              <TodoItem
+                                item={item}
+                                pressHandler={pressHandler}
+                              />
+                            )}
+                          ></FlatList>
+                        </View>
                       </View>
                     </View>
                   </View>
-                </View>
-              )}
-              {/* end of index===currentindex above */}
-            </View>
-          </TouchableOpacity>
-        );
-        //end of data.map above
-      })}
-    </View>
-  );
+                )}
+                {/* end of index===currentindex above */}
+              </View>
+            </TouchableOpacity>
+          );
+          //end of data.map above
+        })}
+      </View>
+    );
+  } else {
+    return (
+      <AppLoading
+        startAsync={getFonts}
+        onFinish={() => setFontsLoaded(true)}
+        onError={console.warn}
+      />
+    );
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
     paddingTop: 100,
-    // backgroundColor: "#B18D8B",
-    backgroundColor: "#313035",
+    backgroundColor: "#ededed",
     justifyContent: "center",
   },
 
@@ -147,31 +160,49 @@ const styles = StyleSheet.create({
 
   addHeader: {
     fontSize: 30,
-    color: "#eee",
+    fontFamily: "abrilfatface",
+    color: "black",
+    textTransform: "uppercase",
+    textAlign: "center",
+  },
+  addHeader2: {
+    fontFamily: "jostlight",
+    fontSize: 30,
+    color: "black",
+    textTransform: "uppercase",
+    textAlign: "center",
+  },
+  addHeader3: {
+    fontSize: 30,
+    fontFamily: "reemkufi",
+    color: "black",
     textTransform: "uppercase",
     textAlign: "center",
   },
 
   selectCategory: {
     alignItems: "center",
-    backgroundColor: "#9f5c64",
-    marginTop: 20,
-    marginBottom: 20,
-    padding: 15,
+    backgroundColor: "#616161",
+    marginTop: 15,
+    marginBottom: 25,
+    padding: 12,
     marginRight: 30,
     marginLeft: 30,
     borderRadius: 5,
   },
 
   categoryTxt: {
-    fontSize: 15,
+    fontSize: 18,
     textAlign: "center",
+    fontFamily: "jostlight",
+    letterSpacing: 0.5,
   },
 
   cardContainer: {
     flexGrow: 1,
-
-    margin: 15,
+    margin: 10,
+    marginLeft: 30,
+    marginRight: 30,
   },
 
   card: {
@@ -180,9 +211,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   heading: {
+    fontFamily: "abrilfatface",
     fontSize: 20,
     fontWeight: "bold",
     textTransform: "uppercase",
+    letterSpacing: 1.5,
   },
 
   body: {

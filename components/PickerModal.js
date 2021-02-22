@@ -44,11 +44,6 @@ const PickerModal: React.FC<Props> = ({
     }
   }, [value]);
 
-  // onClose;
-  // const onClose = (show) => {
-  //   setShow = "false";
-  // };
-
   return (
     <Modal animated transparent visible={visible} show={show}>
       <View style={styles.container}>
@@ -57,13 +52,13 @@ const PickerModal: React.FC<Props> = ({
             <Ionicons
               name="close"
               size={32}
-              color="black"
+              color="red"
               // onPress={onClose}
               onPress={() => setShow(!true)}
               animationType="fade"
             />
             <Text>{title}</Text>
-            <Ionicons name="md-checkmark-circle" size="32"></Ionicons>
+            <Ionicons name="md-checkmark" size={32} color="green" />
           </View>
           <Picker
             selectedValue={pickerValue}
