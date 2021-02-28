@@ -12,8 +12,8 @@ export default function TodoItem({ item, pressHandler }) {
 const styles = StyleSheet.create({
   item: {
     backgroundColor: "rgba( 255,255, 255, 0.2)",
-    padding: 16,
-    marginTop: 16,
+    padding: 10,
+    margin: 8,
     borderWidth: 1,
     // borderColor: "#bbb",
     borderColor: "rgba( 255,255, 255, 0.1)",

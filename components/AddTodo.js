@@ -40,7 +40,7 @@ const styles = {
   button: {
     alignItems: "center",
     backgroundColor: "#383838",
-    padding: 12,
+    padding: 10,
     marginRight: 30,
     marginLeft: 30,
     borderRadius: 5,

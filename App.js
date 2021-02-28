@@ -30,6 +30,22 @@ export default function App() {
 
   const [show, setShow] = useState(false);
 
+  const [showPicker, setShowPicker] = useState("");
+
+  const [user, setUser] = useState({
+    id: "",
+    name: "",
+    age: "",
+    gender: "",
+    introduction: "",
+    experiences: [],
+    img: "",
+  });
+
+  const handleChange = (fieldName, value) => {
+    setUser((prevUser: User) => ({ ...prevUser, [fieldName]: value }));
+  };
+
   // function: When pressing on an todo item, it gets deleted.
   // filter through the current state, takes out the one item which has the key that
   // is pressed and "deletes" it.
@@ -60,9 +76,8 @@ export default function App() {
           size={60}
           color="pink"
         /> */}
-        {/* <Text style={styles.addHeader}>Add task</Text> */}
-        <Text style={styles.addHeader2}>Add your task</Text>
-        {/* <Text style={styles.addHeader3}>Add task</Text> */}
+
+        <Text style={styles.addHeader}>Add your task</Text>
 
         <AddTodo submitHandler={submitHandler} />
 
@@ -78,7 +93,12 @@ export default function App() {
         </TouchableOpacity>
 
         {show === true && (
-          <PickerModal show={show} setShow={setShow}></PickerModal>
+          <PickerModal
+            onSelect={(value) => handleChange(showPicker, value)}
+            value={showPicker ? user[showPicker] : ""}
+            show={show}
+            setShow={setShow}
+          ></PickerModal>
         )}
 
         {data.map(({ bg, color, category, subCategories }, index) => {
@@ -88,7 +108,7 @@ export default function App() {
               onPress={(e) => {
                 setCurrentIndex(index === currentIndex ? null : index);
                 //shows current category when clicking on the title.
-                console.log(e.target.textContent);
+                // console.log(e.target.textContent);
               }}
               style={styles.cardContainer}
               activeOpacity={0.9}
@@ -108,8 +128,6 @@ export default function App() {
                     ))}
                     <View style={styles.listContainer}>
                       <View style={styles.listContent}>
-                        {/* <AddTodo submitHandler={submitHandler} /> */}
-                        {/* <Form></Form> */}
                         <View style={styles.list}>
                           <FlatList
                             data={todos}
@@ -149,7 +167,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flexGrow: 1,
-    paddingTop: 100,
+    paddingTop: 60,
     backgroundColor: "#ededed",
     justifyContent: "center",
   },
@@ -159,38 +177,25 @@ const styles = StyleSheet.create({
   },
 
   addHeader: {
-    fontSize: 30,
-    fontFamily: "abrilfatface",
-    color: "black",
-    textTransform: "uppercase",
-    textAlign: "center",
-  },
-  addHeader2: {
     fontFamily: "jostlight",
     fontSize: 30,
     color: "black",
     textTransform: "uppercase",
     textAlign: "center",
   },
-  addHeader3: {
-    fontSize: 30,
-    fontFamily: "reemkufi",
-    color: "black",
-    textTransform: "uppercase",
-    textAlign: "center",
-  },
 
+  //select category btn
   selectCategory: {
     alignItems: "center",
     backgroundColor: "#616161",
-    marginTop: 15,
+    marginTop: 10,
     marginBottom: 25,
-    padding: 12,
+    padding: 10,
     marginRight: 30,
     marginLeft: 30,
     borderRadius: 5,
   },
-
+  //select category text
   categoryTxt: {
     fontSize: 18,
     textAlign: "center",
@@ -198,9 +203,10 @@ const styles = StyleSheet.create({
     letterSpacing: 0.5,
   },
 
+  //container containing all categories
   cardContainer: {
     flexGrow: 1,
-    margin: 10,
+    margin: 0,
     marginLeft: 30,
     marginRight: 30,
   },
@@ -231,10 +237,10 @@ const styles = StyleSheet.create({
 
   listContainer: {
     //tillfällig styling tills jag fixar senare.
-    height: 400,
-    width: 300,
+    height: 200,
+    width: 310,
     // flex: 1,
-    // backgroundColor: "#eeedeb",
+    marginTop: 20,
     backgroundColor: "rgba(238, 237, 235, 0.2)",
     borderColor: "rgba(238, 237, 235, 0.0)",
     borderRadius: 3,
@@ -249,11 +255,12 @@ const styles = StyleSheet.create({
     shadowRadius: 2.22,
     elevation: 3,
   },
-
   listContent: {
-    padding: 40,
+    paddingTop: 15,
+    paddingRight: 10,
+    paddingLeft: 10,
   },
   list: {
-    marginTop: 20,
+    // marginTop: 8,
   },
 });

@@ -24,12 +24,13 @@ const PickerModal: React.FC<Props> = ({
   // items,
   title,
   // onClose,
-  Onselect,
+  onSelect,
   value,
 }) => {
   // const [currentIndex, setCurrentIndex] = useState(null);
   // const [onClose, setOnClose] = useState("");
-  const [pickerValue, setPickerValue] = useState("Useful");
+  const [pickerValue, setPickerValue] = useState("");
+
   const items = [
     "5 minutes or less",
     "Useful",
@@ -58,14 +59,23 @@ const PickerModal: React.FC<Props> = ({
               animationType="fade"
             />
             <Text>{title}</Text>
-            <Ionicons name="md-checkmark" size={32} color="green" />
+            <Ionicons
+              onPress={() => {
+                onSelect(pickerValue);
+                setShow(!true);
+                console.log(pickerValue);
+              }}
+              name="md-checkmark"
+              size={32}
+              color="green"
+            />
           </View>
           <Picker
             selectedValue={pickerValue}
             onValueChange={(value) => setPickerValue(value)}
           >
             {items.map((item) => (
-              <Picker.Item value={item} label={item} />
+              <Picker.Item key={item} value={item} label={item} />
             ))}
           </Picker>
         </View>
